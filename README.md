@@ -96,6 +96,10 @@ mounted () {
     $router.go(-1) // 后退一页
     $router.go(0) // 重新载入当前页面 相当于reLaunch当前页面
 ```
+* $router.back()
+
+回到上一页，同$router.go(-1)
+
 * $router.reLaunch()
 
 重新载入小程序

@@ -37,13 +37,13 @@ class MegaloRouter {
     }
     tabBars: string[]
     constructor () {}
-    push (to: string | toRoute = {}) {
+    push (to: string | toRoute = {}): void {
         to = typeof to === 'string' ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
         let action = this.tabBars.includes(path) ?  'switchTab' : 'navigateTo'
         this.navigate(action, to)
     }
-    replace (to: string | toRoute = {}) {
+    replace (to: string | toRoute = {}): void {
         to = typeof to === "string" ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
         let action = this.tabBars.includes(path) ?  'switchTab' : 'redirectTo'
@@ -57,7 +57,10 @@ class MegaloRouter {
         const platform: Platform = await this.getPlatform()
         platform.navigateBack({delta})
     }
-    reLaunch (to: string | toRoute = {}) {
+    back (): void {
+        this.go(-1)
+    }
+    reLaunch (to: string | toRoute = {}): void {
         to = typeof to === "string" ? {path: to} : to
         this.navigate('reLaunch', to)
     }

@@ -1,6 +1,6 @@
 {
   "name": "megalo-router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "类似vue-router语法的小程序页面导航插件，适用于网易megalo框架",
   "main": "index.js",
   "repository": "https://github.com/NextBoy/megalo-router.git",

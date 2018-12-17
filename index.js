@@ -85,6 +85,9 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                 });
             });
         };
+        MegaloRouter.prototype.back = function () {
+            this.go(-1);
+        };
         MegaloRouter.prototype.reLaunch = function (to) {
             if (to === void 0) { to = {}; }
             to = typeof to === "string" ? { path: to } : to;
