@@ -120,6 +120,7 @@ async mounted () {
 ```
 
 * $router.platform.ready()
+
 接收一个回调，回调的参数为当前所在平台对象，作用跟getPlatform一样，是基于getPlatform的封装
 
 使用方法
