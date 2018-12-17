@@ -23,7 +23,7 @@ npm i megalo-router --save
 
 ``` js
 // app.js
-import megaloRouter  from 'megaloRouter'
+import megaloRouter  from 'megalo-router'
 
 Vue.use(megaloRouter, {
     tabBars: [
