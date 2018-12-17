@@ -8,7 +8,9 @@
   "license": "MIT",
   "scripts": {
     "build:mac": "node_modules/typescript/bin/tsc",
-    "build:win": "node_modules\typescript\bin\tsc"
+    "build:win": "node_modules\typescript\bin\tsc",
+    "registry:npmjs": "npm config set registry http://registry.npmjs.org",
+    "registry:taobao": "npm config set registry https://registry.npm.taobao.org"
   },
   "devDependencies": {
     "typescript": "^3.2.2"
