@@ -45,7 +45,6 @@ Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列�
 #### 属性
 
 * $router.currentRoute
-* $route
 
 包含如下信息：
 ```js
