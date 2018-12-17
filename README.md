@@ -1,7 +1,7 @@
 # megalo-router
 配合网易小程序框架megalo使用的router,尽量保持与vue-router一致的开发体验，减少技术成本，方便项目从web迁移到小程序
 
-微信小程序、百度小程序、支付宝小程序通用
+微信小程序、百度小程序、支付宝小程序通用语法，无需做适配
 
 优化megalo的分包页面的跳转写法
 
@@ -45,14 +45,23 @@ Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列�
 #### 属性
 
 * $router.currentRoute
+* $route
 
-当前路由对应的路由信息对象，等价于 $route
 包含如下信息：
 ```js
 {
     query: {} // 页面路由参数
     path: '' // 不带参数的基本路径
     fullPath: '' // 完整路径，带参数
+}
+```
+在页面内通过$route获取参数
+```page.vue
+
+mounted () {
+    console.log(this.$route.query)
+    console.log(this.$route.path)
+    console.log(this.$route.fullPath)
 }
 ```
 
@@ -144,7 +153,14 @@ async mounted () {
       complete: (res) => {console.log('跳转结束', res)}
     }
   )
-    ```    
+    ```
+
+## 微信群交流
+
+欢迎入群交流(请打开微信二维码扫描)
+
+![img](code.jpg)    
+    
 
 
 
