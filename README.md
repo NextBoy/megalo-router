@@ -23,7 +23,7 @@ npm i megalo-router --save
 
 ``` js
 // app.js
-import megaloRouter  from 'megaloRouter'
+import megaloRouter  from 'megalo-router'
 
 Vue.use(megaloRouter, {
     tabBars: [
@@ -45,7 +45,6 @@ Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列�
 #### 属性
 
 * $router.currentRoute
-* $route
 
 包含如下信息：
 ```js
@@ -125,6 +124,7 @@ async mounted () {
 ```
 
 * $router.platform.ready()
+
 接收一个回调，回调的参数为当前所在平台对象，作用跟getPlatform一样，是基于getPlatform的封装
 
 使用方法
@@ -140,7 +140,12 @@ async mounted () {
 ```
 
 ## 提示
-
+- 传参问题
+    
+    tabBar页面接收参数的话应该使用reLaunch(小程序自身的限制)
+    
+    如果query传参中带有路径或者网址作为参数，请使用encodeURIComponent 和 decodeURIComponent进行编码解码传递，否则可能发生未知错误或者丢参
+    
 - 跳转路径问题
 
     所有跳转的路径都是使用'/'开头的
