@@ -218,7 +218,7 @@ async mounted () {
 ## 提示
 - 传参问题
     
-    tabBar页面接收参数的话应该使用reLaunch(小程序自身的限制)
+    tabBar页面接收参数的话应该使用reLaunch(小程序自身的限制) 或者开启路由的宽松模式
     
     如果query传参中带有路径或者网址作为参数，请使用encodeURIComponent 和 decodeURIComponent进行编码解码传递，否则可能发生未知错误或者丢参
     
