@@ -124,11 +124,11 @@ mounted () {
 
 #### 方法
 
-*$router.ready()
+* $router.ready()
 
 接收一个回调函数作为参数
 
-在App.vue中药获取$router.app 或者 $route对象 或者 $router.currentRoute，需要调用$router.ready
+在App.vue中获取$router.app、$route对象 或者 $router.currentRoute，需要调用$router.ready
 
 ```App.vue
     onLaunch () {
