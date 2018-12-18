@@ -41,14 +41,15 @@ npm i megalo-router --save
 import megaloRouter  from 'megalo-router'
 
 Vue.use(megaloRouter, {
-    mode: 'strict' // strict or loose
-    tabBars: [
+    mode: 'strict' // strict or loose 可配置项，不配置的话默认为strict
+    tabBars: [ // 必须配置项
         '/pages/hello',
         '/pages/my/index'
     ]
 })
 ```
 Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列表
+
 Vue.use的option接受一个mode变量, 表示路由的模式，有两种模式可选，strict 或者 loose，默认是严格模式
 
 - strict 严格模式，如果使用push 或者 replace携带参数跳转到tab页面，将使用switchTab进行跳转，此时tab页面是无法接收到参数的，这是小程序自身的限制，switchTab无法传参
