@@ -2,6 +2,7 @@ import {joinQuery, parseUrl, deepClone, getMegaloRoutePath, getCurrentRoute} fro
 declare let wx: any
 declare let my: any
 declare let swan: any
+declare let getApp: Function
 
 interface Route {
     query: object
@@ -26,6 +27,7 @@ interface Platform {
 class MegaloRouter {
     currentRoute: Route
     protected _platform: Platform
+    protected mode: string = 'strict'
     get platform () {
         const that = this
         return {
@@ -35,18 +37,43 @@ class MegaloRouter {
             }
         }
     }
+    get app () {
+        return getApp()
+    }
+    ready (callback) {
+        const ready = () => this.currentRoute && this.currentRoute.path && getApp() && this._platform
+        if (ready()) {
+            callback()
+        } else {
+            const timer = setInterval(() => {
+                if (ready()) {
+                    callback()
+                    clearInterval(timer)
+                }
+            }, 10)
+        }
+    }
     tabBars: string[]
     constructor () {}
+    tabAction (to: toRoute): string {
+        if (this.mode === 'strict') return 'switchTab'
+        to.query = to.query || {}
+        const hasQuery = Object.keys(to.query).length || /\?.*?=/.test(to.path)
+        if (hasQuery) {
+            return 'reLaunch'
+        }
+        return 'switchTab'
+    }
     push (to: string | toRoute = {}) {
         to = typeof to === 'string' ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
-        let action = this.tabBars.includes(path) ?  'switchTab' : 'navigateTo'
+        let action = this.tabBars.includes(path) ?  this.tabAction(to) : 'navigateTo'
         this.navigate(action, to)
     }
     replace (to: string | toRoute = {}) {
         to = typeof to === "string" ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
-        let action = this.tabBars.includes(path) ?  'switchTab' : 'redirectTo'
+        let action = this.tabBars.includes(path) ?  this.tabAction(to) : 'redirectTo'
         this.navigate(action, to)
     }
     async go (delta: number) {
@@ -109,6 +136,7 @@ class MegaloRouter {
     install (Vue, options) {
         const router = this
         router.tabBars = options.tabBars || []
+        router.mode = options.mode || 'strict'
         Object.defineProperty(Vue.prototype, '$router', {
             get () {
                 return router

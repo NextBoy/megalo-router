@@ -38,6 +38,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var MegaloRouter = (function () {
         function MegaloRouter() {
+            this.mode = 'strict';
         }
         Object.defineProperty(MegaloRouter.prototype, "platform", {
             get: function () {
@@ -52,18 +53,50 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(MegaloRouter.prototype, "app", {
+            get: function () {
+                return getApp();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MegaloRouter.prototype.ready = function (callback) {
+            var _this = this;
+            var ready = function () { return _this.currentRoute && _this.currentRoute.path && getApp() && _this._platform; };
+            if (ready()) {
+                callback();
+            }
+            else {
+                var timer_1 = setInterval(function () {
+                    if (ready()) {
+                        callback();
+                        clearInterval(timer_1);
+                    }
+                }, 10);
+            }
+        };
+        MegaloRouter.prototype.tabAction = function (to) {
+            if (this.mode === 'strict')
+                return 'switchTab';
+            to.query = to.query || {};
+            var hasQuery = Object.keys(to.query).length || /\?.*?=/.test(to.path);
+            if (hasQuery) {
+                return 'reLaunch';
+            }
+            return 'switchTab';
+        };
         MegaloRouter.prototype.push = function (to) {
             if (to === void 0) { to = {}; }
             to = typeof to === 'string' ? { path: to } : to;
             var path = utils_1.parseUrl(to.path || '').path;
-            var action = this.tabBars.includes(path) ? 'switchTab' : 'navigateTo';
+            var action = this.tabBars.includes(path) ? this.tabAction(to) : 'navigateTo';
             this.navigate(action, to);
         };
         MegaloRouter.prototype.replace = function (to) {
             if (to === void 0) { to = {}; }
             to = typeof to === "string" ? { path: to } : to;
             var path = utils_1.parseUrl(to.path || '').path;
-            var action = this.tabBars.includes(path) ? 'switchTab' : 'redirectTo';
+            var action = this.tabBars.includes(path) ? this.tabAction(to) : 'redirectTo';
             this.navigate(action, to);
         };
         MegaloRouter.prototype.go = function (delta) {
@@ -137,10 +170,10 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                     resolve(_this._platform);
                 }
                 else {
-                    var timer_1 = setInterval(function () {
+                    var timer_2 = setInterval(function () {
                         if (_this._platform) {
                             resolve(_this._platform);
-                            clearInterval(timer_1);
+                            clearInterval(timer_2);
                         }
                     }, 10);
                 }
@@ -149,6 +182,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
         MegaloRouter.prototype.install = function (Vue, options) {
             var router = this;
             router.tabBars = options.tabBars || [];
+            router.mode = options.mode || 'strict';
             Object.defineProperty(Vue.prototype, '$router', {
                 get: function () {
                     return router;

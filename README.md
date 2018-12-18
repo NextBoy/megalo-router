@@ -20,7 +20,13 @@ megalo默认的分包页面之间的跳转比较麻烦，需要写相对路径�
 
 - 1.0.2
 
-    fix: 修复APP.vue的onLaunch里面调用报错的问题     
+    fix: 修复APP.vue的onLaunch里面调用报错的问题
+    
+- 1.0.3
+
+    feat: 增加$router.ready方法          
+    feat: 增加router模式配置          
+    feat: 增加$router.app 获取全局对象         
 
 ## 安装
 
@@ -35,6 +41,7 @@ npm i megalo-router --save
 import megaloRouter  from 'megalo-router'
 
 Vue.use(megaloRouter, {
+    mode: 'strict' // strict or loose
     tabBars: [
         '/pages/hello',
         '/pages/my/index'
@@ -42,6 +49,10 @@ Vue.use(megaloRouter, {
 })
 ```
 Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列表
+Vue.use的option接受一个mode变量, 表示路由的模式，有两种模式可选，strict 或者 loose，默认是严格模式
+
+- strict 严格模式，如果使用push 或者 replace携带参数跳转到tab页面，将使用switchTab进行跳转，此时tab页面是无法接收到参数的，这是小程序自身的限制，switchTab无法传参
+- loose 宽松模式，如果使用push 或者 replace携带参数跳转到tab页面，将使用reLaunch进行跳转，此时tab页面可以接收到参数的，但是这意味着小程序将重新载入
 
 注意：该路径必须以 '/' 开头
 
@@ -53,7 +64,31 @@ Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列�
 
 #### 属性
 
-* $router.currentRoute
+*$router.app
+
+获取全局的app,相当于getApp()
+
+注意：在App.vue中使用的话需要结合$router.ready(()；在普通的page页面使用则无限制
+
+在普通页面使用
+```page.vue
+
+mounted () {
+    console.log(this.$router.app)
+}
+```
+在App.vue使用
+
+```App.vue
+    onLaunch () {
+        this.$router.ready(() => { 
+            console.log(this.$router.app) // 成功 
+        })
+    }
+
+```
+
+* $router.currentRoute & $route
 
 包含如下信息：
 ```js
@@ -63,7 +98,9 @@ Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列�
     fullPath: '' // 完整路径，带参数
 }
 ```
-在page页面内通过$route获取参数(请不要在APP.vue里面使用$route)
+在page页面内通过$route获取参数(在APP.vue里面使用$route的话需要结合$router.ready)
+
+在普通页面使用
 ```page.vue
 
 mounted () {
@@ -72,14 +109,43 @@ mounted () {
     console.log(this.$route.fullPath)
 }
 ```
+在App.vue使用
+
+```App.vue
+    onLaunch () {
+        this.$router.ready(() => {
+            console.log(this.$route) // 成功 
+            console.log(this.$router.currentRoute) // 成功 
+        })
+    }
+
+```
 
 #### 方法
+
+*$router.ready()
+
+接收一个回调函数作为参数
+
+在App.vue中药获取$router.app 或者 $route对象 或者 $router.currentRoute，需要调用$router.ready
+
+```App.vue
+    onLaunch () {
+        this.$router.ready(() => {
+            console.log(this.$router.app) // 成功
+            console.log(this.$route) // 成功
+        
+        })
+    }
+
+```
+如果在App.vue中不使用ready方法直接获取 $router.app或者$route的话会导致失败，因为此时router并未初始化完成
 
 * $router.push()
 
 打开一个新页面，如果是打开tabBar页面，实际是使用switchTab, 否则使用navigateTo
 
-**如果是跳转到tabBar页面，是无法进行传参的，如果真的要传参到tabBar页面，请使用reLaunch**
+**如果是跳转到tabBar页面，是无法进行传参的，如果真的要传参到tabBar页面，请使用reLaunch 或者路由模式配置为宽松模式（loose）**
 ```js
     // 使用参数和路径进行跳转
     $router.push({query: {id: 1}, path: '/pages/hello/index'})
@@ -90,7 +156,7 @@ mounted () {
 
 在当前页面打开新页面进行替换，如果是打开tabBar页面，实际是使用switchTab, 否则使用redirectTo
 
-**如果是跳转到tabBar页面，是无法进行传参的，如果真的要传参到tabBar页面，请使用reLaunch**
+**如果是跳转到tabBar页面，是无法进行传参的，如果真的要传参到tabBar页面，请使用reLaunch 或者路由模式配置为宽松模式（loose）**
 ```js
     // 使用参数和路径进行跳转
     $router.replace({query: {id: 1}, path: '/pages/hello/index'})
