@@ -101,7 +101,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                 return __generator(this, function (_e) {
                     switch (_e.label) {
                         case 0:
-                            _e.trys.push([0, 2, , 3]);
+                            _e.trys.push([0, 3, , 4]);
                             if (!to.path)
                                 throw new Error('path 不能为空');
                             path = to.path, _a = to.query, query = _a === void 0 ? {} : _a, _b = to.success, success = _b === void 0 ? function () { } : _b, _c = to.fail, fail = _c === void 0 ? function (err) {
@@ -109,9 +109,11 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                                 throw new Error(err);
                             } : _c, _d = to.complete, complete = _d === void 0 ? function () { } : _d;
                             url = Object.keys(query).length ? utils_1.joinQuery(path, query) : path;
-                            url = utils_1.getMegaloRoutePath(url);
-                            return [4, this.getPlatform()];
+                            return [4, utils_1.getMegaloRoutePath(url)];
                         case 1:
+                            url = _e.sent();
+                            return [4, this.getPlatform()];
+                        case 2:
                             platform = _e.sent();
                             platform[action]({
                                 url: url,
@@ -119,11 +121,11 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                                 fail: fail,
                                 complete: complete
                             });
-                            return [3, 3];
-                        case 2:
+                            return [3, 4];
+                        case 3:
                             e_1 = _e.sent();
                             throw new Error(e_1);
-                        case 3: return [2];
+                        case 4: return [2];
                     }
                 });
             });
@@ -192,7 +194,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                     }
                 },
                 onShow: function () {
-                    if (this.$mp.page) {
+                    if (this.$mp.page && this.$mp.page.route) {
                         var path = '/' + this.$mp.page.route;
                         router.currentRoute = {
                             query: this.$mp.options,

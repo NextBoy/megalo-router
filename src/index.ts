@@ -37,13 +37,13 @@ class MegaloRouter {
     }
     tabBars: string[]
     constructor () {}
-    push (to: string | toRoute = {}): void {
+    push (to: string | toRoute = {}) {
         to = typeof to === 'string' ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
         let action = this.tabBars.includes(path) ?  'switchTab' : 'navigateTo'
         this.navigate(action, to)
     }
-    replace (to: string | toRoute = {}): void {
+    replace (to: string | toRoute = {}) {
         to = typeof to === "string" ? {path: to} : to
         const { path } = parseUrl(to.path || '') as Route
         let action = this.tabBars.includes(path) ?  'switchTab' : 'redirectTo'
@@ -60,7 +60,7 @@ class MegaloRouter {
     back (): void {
         this.go(-1)
     }
-    reLaunch (to: string | toRoute = {}): void {
+    reLaunch (to: string | toRoute = {}) {
         to = typeof to === "string" ? {path: to} : to
         this.navigate('reLaunch', to)
     }
@@ -80,7 +80,7 @@ class MegaloRouter {
             // 如果有参数，拼接参数
             let url:string = Object.keys(query).length ? joinQuery(path, query) : path
             // 转换为符合megalo要求的相对路径
-            url = getMegaloRoutePath(url)
+            url = await getMegaloRoutePath(url)
             const platform: Platform = await this.getPlatform()
             platform[action]({
                 url,
@@ -154,7 +154,7 @@ class MegaloRouter {
             },
             // onShow 里面还需要重新赋值一次，用于页面回退的时候纠正
             onShow () {
-                if (this.$mp.page) {
+                if (this.$mp.page && this.$mp.page.route) {
                     const path = '/' + this.$mp.page.route
                     router.currentRoute = {
                         query: this.$mp.options,

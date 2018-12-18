@@ -66,20 +66,35 @@ declare const getCurrentPages: Function
 /**
  * @description 获取当前路由
  */
-export const getCurrentRoute = (): string => {
-    const pages = getCurrentPages()
-    return pages[pages.length - 1].route
+export const getCurrentRoute = async (): Promise<string> => {
+    const queryRoute = () => {
+        const pages = getCurrentPages()
+        if (!pages[pages.length - 1]) return false
+        return pages[pages.length - 1].route
+    }
+    return new Promise<string>(resolve => {
+        if (queryRoute()) {
+            resolve(queryRoute())
+        } else {
+            const timer = setInterval(() => {
+                if (queryRoute()) {
+                    resolve(queryRoute())
+                    clearInterval(timer)
+                }
+            }, 10)
+        }
+    })
 }
 /**
  * @description 转换路由路径为符合megalo的路径
  * @param pathB {string}
  * @return url {string}
  */
-export const getMegaloRoutePath = (pathB: string): string => {
-    const pathA: string = getCurrentRoute()
+export const getMegaloRoutePath = async (pathB: string): Promise<string> => {
+    const pathA: string = await getCurrentRoute()
     const toTop: string = pathA.split('/').reduce((res, val, index, arr) => {
         if (index === arr.length - 1 || !val) return res
         return '../' + res
     }, '')
-    return (toTop + pathB).replace(/\/\//g, '/')
+    return Promise.resolve((toTop + pathB).replace(/\/\//g, '/'))
 }
