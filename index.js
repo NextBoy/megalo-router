@@ -94,7 +94,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
         };
         MegaloRouter.prototype.replace = function (to) {
             if (to === void 0) { to = {}; }
-            to = typeof to === "string" ? { path: to } : to;
+            to = typeof to === 'string' ? { path: to } : to;
             var path = utils_1.parseUrl(to.path || '').path;
             var action = this.tabBars.includes(path) ? this.tabAction(to) : 'redirectTo';
             this.navigate(action, to);
@@ -123,7 +123,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
         };
         MegaloRouter.prototype.reLaunch = function (to) {
             if (to === void 0) { to = {}; }
-            to = typeof to === "string" ? { path: to } : to;
+            to = typeof to === 'string' ? { path: to } : to;
             this.navigate('reLaunch', to);
         };
         MegaloRouter.prototype.navigate = function (action, to) {
@@ -200,18 +200,8 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                 }
             });
             Vue.mixin({
-                beforeCreate: function () {
-                    if (this.$mp.page && this.$mp.page.route) {
-                        var path = '/' + this.$mp.page.route;
-                        router.currentRoute = {
-                            query: this.$mp.options,
-                            path: path,
-                            fullPath: utils_1.joinQuery(path, this.$mp.options)
-                        };
-                    }
-                    if (router._platform)
-                        return;
-                    var platformType = this.$mp.platform || undefined;
+                onLaunch: function () {
+                    var platformType = this.$mp ? this.$mp.platform : undefined;
                     switch (platformType) {
                         case 'wechat':
                             router._platform = wx;
@@ -224,7 +214,34 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                             break;
                         default:
                             router._platform = wx;
-                            throw new Error('vue-router无法识别小程序平台, 默认为wx');
+                            console.warn('megalo-router无法识别小程序平台, 默认为wx');
+                    }
+                    console.warn("\u5F53\u524D\u5C0F\u7A0B\u5E8F\u5E73\u53F0, " + platformType);
+                },
+                beforeCreate: function () {
+                    if (this.$mp && this.$mp.page && this.$mp.page.route) {
+                        var path = '/' + this.$mp.page.route;
+                        router.currentRoute = {
+                            query: this.$mp.options,
+                            path: path,
+                            fullPath: utils_1.joinQuery(path, this.$mp.options)
+                        };
+                    }
+                    if (router._platform)
+                        return;
+                    var platformType = this.$mp ? this.$mp.platform : undefined;
+                    switch (platformType) {
+                        case 'wechat':
+                            router._platform = wx;
+                            break;
+                        case 'alipay':
+                            router._platform = my;
+                            break;
+                        case 'swan':
+                            router._platform = swan;
+                            break;
+                        default:
+                            console.warn('megalo-router无法识别小程序平台');
                     }
                 },
                 onShow: function () {

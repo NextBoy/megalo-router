@@ -1,4 +1,4 @@
-import {joinQuery, parseUrl, deepClone, getMegaloRoutePath, getCurrentRoute} from './utils'
+import { joinQuery, parseUrl, deepClone, getMegaloRoutePath, getCurrentRoute } from './utils'
 declare let wx: any
 declare let my: any
 declare let swan: any
@@ -54,26 +54,25 @@ class MegaloRouter {
         }
     }
     tabBars: string[]
-    constructor () {}
     tabAction (to: toRoute): string {
         if (this.mode === 'strict') return 'switchTab'
         to.query = to.query || {}
-        const hasQuery = Object.keys(to.query).length || /\?.*?=/.test(to.path)
+        const hasQuery = Object.keys(to.query).length || /\?.*?=/.test(to.path!)
         if (hasQuery) {
             return 'reLaunch'
         }
         return 'switchTab'
     }
     push (to: string | toRoute = {}) {
-        to = typeof to === 'string' ? {path: to} : to
+        to = typeof to === 'string' ? { path: to } : to
         const { path } = parseUrl(to.path || '') as Route
-        let action = this.tabBars.includes(path) ?  this.tabAction(to) : 'navigateTo'
+        let action = this.tabBars.includes(path) ? this.tabAction(to) : 'navigateTo'
         this.navigate(action, to)
     }
     replace (to: string | toRoute = {}) {
-        to = typeof to === "string" ? {path: to} : to
+        to = typeof to === 'string' ? { path: to } : to
         const { path } = parseUrl(to.path || '') as Route
-        let action = this.tabBars.includes(path) ?  this.tabAction(to) : 'redirectTo'
+        let action = this.tabBars.includes(path) ? this.tabAction(to) : 'redirectTo'
         this.navigate(action, to)
     }
     async go (delta: number) {
@@ -82,13 +81,13 @@ class MegaloRouter {
         }
         delta = -delta
         const platform: Platform = await this.getPlatform()
-        platform.navigateBack({delta})
+        platform.navigateBack({ delta })
     }
     back (): void {
         this.go(-1)
     }
     reLaunch (to: string | toRoute = {}) {
-        to = typeof to === "string" ? {path: to} : to
+        to = typeof to === 'string' ? { path: to } : to
         this.navigate('reLaunch', to)
     }
     async navigate (action:string = 'navigateTo', to: toRoute = {}) {
@@ -154,8 +153,26 @@ class MegaloRouter {
             }
         })
         Vue.mixin({
+            onLaunch () {
+                let platformType = this.$mp ? this.$mp.platform : undefined
+                switch (platformType) {
+                    case 'wechat':
+                        router._platform = wx as Platform
+                        break
+                    case 'alipay':
+                        router._platform = my as Platform
+                        break
+                    case 'swan':
+                        router._platform = swan as Platform
+                        break
+                    default:
+                        router._platform = wx as Platform
+                        console.warn('megalo-router无法识别小程序平台, 默认为wx')
+                }
+                console.warn(`当前小程序平台, ${platformType}`)
+            },
             beforeCreate () {
-                if (this.$mp.page && this.$mp.page.route) {
+                if (this.$mp && this.$mp.page && this.$mp.page.route) {
                     const path = '/' + this.$mp.page.route
                     router.currentRoute = {
                         query: this.$mp.options,
@@ -163,21 +180,20 @@ class MegaloRouter {
                         fullPath: joinQuery(path, this.$mp.options)
                     }
                 }
-                if(router._platform) return
-                let platformType  = this.$mp.platform || undefined
-                switch(platformType) {
+                if (router._platform) return
+                let platformType = this.$mp ? this.$mp.platform : undefined
+                switch (platformType) {
                     case 'wechat':
                         router._platform = wx as Platform
-                        break;
+                        break
                     case 'alipay':
                         router._platform = my as Platform
-                        break;
+                        break
                     case 'swan':
                         router._platform = swan as Platform
-                        break;
+                        break
                     default:
-                        router._platform = wx as Platform
-                        throw new Error('vue-router无法识别小程序平台, 默认为wx')
+                        console.warn('megalo-router无法识别小程序平台')
                 }
             },
             // onShow 里面还需要重新赋值一次，用于页面回退的时候纠正
@@ -191,7 +207,7 @@ class MegaloRouter {
                     }
                 }
             }
-        })
+        } as any)
     }
 }
 
