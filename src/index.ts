@@ -169,7 +169,7 @@ class MegaloRouter {
                         router._platform = wx as Platform
                         console.warn('megalo-router无法识别小程序平台, 默认为wx')
                 }
-                console.warn(`当前小程序平台, ${platformType}`)
+                console.warn(`megalo-router识别小程序平台成功，当前小程序平台, ${platformType}`)
             },
             beforeCreate () {
                 if (this.$mp && this.$mp.page && this.$mp.page.route) {
@@ -193,7 +193,7 @@ class MegaloRouter {
                         router._platform = swan as Platform
                         break
                     default:
-                        console.warn('megalo-router无法识别小程序平台')
+                        console.warn('megalo-router正在尝试识别小程序平台')
                 }
             },
             // onShow 里面还需要重新赋值一次，用于页面回退的时候纠正

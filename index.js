@@ -216,7 +216,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                             router._platform = wx;
                             console.warn('megalo-router无法识别小程序平台, 默认为wx');
                     }
-                    console.warn("\u5F53\u524D\u5C0F\u7A0B\u5E8F\u5E73\u53F0, " + platformType);
+                    console.warn("megalo-router\u8BC6\u522B\u5C0F\u7A0B\u5E8F\u5E73\u53F0\u6210\u529F\uFF0C\u5F53\u524D\u5C0F\u7A0B\u5E8F\u5E73\u53F0, " + platformType);
                 },
                 beforeCreate: function () {
                     if (this.$mp && this.$mp.page && this.$mp.page.route) {
@@ -241,7 +241,7 @@ define(["require", "exports", "./utils"], function (require, exports, utils_1) {
                             router._platform = swan;
                             break;
                         default:
-                            console.warn('megalo-router无法识别小程序平台');
+                            console.warn('megalo-router正在尝试识别小程序平台');
                     }
                 },
                 onShow: function () {
