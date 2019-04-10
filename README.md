@@ -26,7 +26,11 @@ megalo默认的分包页面之间的跳转比较麻烦，需要写相对路径�
 
     feat: 增加$router.ready方法          
     feat: 增加router模式配置          
-    feat: 增加$router.app 获取全局对象         
+    feat: 增加$router.app 获取全局对象   
+
+- 1.0.4
+
+    fix: 修复在最新的脚手架生成的项目下无法运行的问题          
 
 ## 安装
 
@@ -37,18 +41,19 @@ npm i megalo-router --save
 ## 使用
 
 ``` js
-// app.js
+// app.js or main.js
 import megaloRouter  from 'megalo-router'
 
 Vue.use(megaloRouter, {
-    mode: 'strict' // strict or loose
-    tabBars: [
+    mode: 'strict' // strict or loose 可配置项，不配置的话默认为strict
+    tabBars: [ // 必须配置项
         '/pages/hello',
         '/pages/my/index'
     ]
 })
 ```
 Vue.use的option接受一个tabBars变量, 参数为小程序的tabBar路径列表
+
 Vue.use的option接受一个mode变量, 表示路由的模式，有两种模式可选，strict 或者 loose，默认是严格模式
 
 - strict 严格模式，如果使用push 或者 replace携带参数跳转到tab页面，将使用switchTab进行跳转，此时tab页面是无法接收到参数的，这是小程序自身的限制，switchTab无法传参
@@ -64,7 +69,7 @@ Vue.use的option接受一个mode变量, 表示路由的模式，有两种模式�
 
 #### 属性
 
-*$router.app
+* $router.app
 
 获取全局的app,相当于getApp()
 
@@ -123,11 +128,11 @@ mounted () {
 
 #### 方法
 
-*$router.ready()
+* $router.ready()
 
 接收一个回调函数作为参数
 
-在App.vue中药获取$router.app 或者 $route对象 或者 $router.currentRoute，需要调用$router.ready
+在App.vue中获取$router.app、$route对象 或者 $router.currentRoute，需要调用$router.ready
 
 ```App.vue
     onLaunch () {
@@ -217,7 +222,7 @@ async mounted () {
 ## 提示
 - 传参问题
     
-    tabBar页面接收参数的话应该使用reLaunch(小程序自身的限制)
+    tabBar页面接收参数的话应该使用reLaunch(小程序自身的限制) 或者开启路由的宽松模式
     
     如果query传参中带有路径或者网址作为参数，请使用encodeURIComponent 和 decodeURIComponent进行编码解码传递，否则可能发生未知错误或者丢参
     
@@ -238,12 +243,6 @@ async mounted () {
     }
   )
     ```
-
-## 微信群交流
-
-欢迎入群交流(请打开微信二维码扫描)
-
-![img](code.jpg)    
     
 
 
